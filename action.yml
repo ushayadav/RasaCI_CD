@@ -3,7 +3,7 @@ description: 'The GitHub action to run the rasa train and rasa test commands'
 inputs:
   rasa_version:
     description: 'The Rasa version used to run test and train'
-    required: false
+    required: true
     default: 'latest-full'
   rasa_image:
     description: 'Custom Docker image'
@@ -11,7 +11,7 @@ inputs:
     default: ''
   rasa_train:
     description: 'Run rasa train'
-    required: false
+    required: true
     default: 'true'
   rasa_test:
     description: 'Run rasa test'
