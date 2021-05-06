@@ -16,11 +16,6 @@ nlu:
     - goodmorning
     - goodevening
     - good afternoon
-<<<<<<< HEAD
-    - wassup
-=======
-    - hey ya
->>>>>>> 4c9bcd6d1f6010853e10b86edbebcaa869e1c0c5
 
 - intent: goodbye
   examples: |
