@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Rasa Train and Test GitHub Action
-        uses: ushayadav/Rasa_CI_CD@master
+        uses: ushayadav/RasaCI_CD@master
         with:
           data_validate: true
           rasa_train: true
