@@ -35,7 +35,7 @@ inputs:
     default: ''
   test_type:
     description: 'The types of tests to run (available types: core/nlu/all)'
-    required: false
+    required: true
     default: 'all'
   publish_summary:
     description: 'Publish tests summary as a PR comment'
@@ -119,6 +119,18 @@ runs:
         # Set cross validation
         if [[ "${{ inputs.cross_validation }}" == "true" ]];then
           echo CROSS_VALIDATION_ARGS="--cross-validation" >> $GITHUB_ENV
+        fi
+
+
+    - name: Run the test command
+      shell: bash
+      run: |
+        if [[ "${{ inputs.rasa_test }}" == "true" ]]; then
+          echo "Run the rasa test"
+          echo ""
+          rasa test
+        else
+          echo "::warning::rasa test is disabled. To turn on the rasa train set the rasa_test parameter to 'true'."
         fi
 
     - name: Clean
