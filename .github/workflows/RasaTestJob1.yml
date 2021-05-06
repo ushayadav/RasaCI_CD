@@ -24,6 +24,7 @@ jobs:
       - name: Rasa Train and Test GitHub Action
         uses: ushayadav/RasaCI_CD@master
         with:
+          requirements_file: requirements.txt
           data_validate: true
           rasa_train: true
           cross_validation: true
