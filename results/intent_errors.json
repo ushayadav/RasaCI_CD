@@ -1,0 +1,18 @@
+[
+  {
+    "text": "wassup",
+    "intent": "greet",
+    "intent_prediction": {
+      "name": "mood_unhappy",
+      "confidence": 0.9994195699691772
+    }
+  },
+  {
+    "text": "good afternoon",
+    "intent": "goodbye",
+    "intent_prediction": {
+      "name": "greet",
+      "confidence": 0.4821014106273651
+    }
+  }
+]
