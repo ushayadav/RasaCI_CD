@@ -90,9 +90,5 @@ jobs:
       run: |
         rasa --version
         rasa test core --stories tests/test_conversations.yml --fail-on-prediction-errors
-  build-images:
-    name: Build Action Server Image
-    needs: 
-    - training-testing
-    runs-on: ubuntu-latest
+  
     
