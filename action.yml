@@ -1,0 +1,127 @@
+name: 'Rasa Train-Test Model GitHub Action'
+description: 'The GitHub action to run the rasa train and rasa test commands'
+inputs:
+  rasa_version:
+    description: 'The Rasa version used to run test and train'
+    required: false
+    default: 'latest-full'
+  rasa_image:
+    description: 'Custom Docker image'
+    required: false
+    default: ''
+  rasa_train:
+    description: 'Run rasa train'
+    required: false
+    default: 'true'
+  rasa_test:
+    description: 'Run rasa test'
+    required: false
+    default: 'true'
+  data_validate:
+    description: 'Validates domain and data files to check for possible mistakes'
+    required: false
+    default: 'true'
+  workspace:
+    description: 'The root directory'
+    required: true
+    default: '${{ github.workspace }}'
+  train_args:
+    description: 'Additional arguments passed to the rasa train command'
+    required: false
+    default: ''
+  test_args:
+    description: 'Additional arguments passed to the rasa test command'
+    required: false
+    default: ''
+  test_type:
+    description: 'The types of tests to run (available types: core/nlu/all)'
+    required: false
+    default: 'all'
+  publish_summary:
+    description: 'Publish tests summary as a PR comment'
+    required: false
+    default: 'true'
+  github_token:
+    description: 'GitHub Token - required to add a comment with summary'
+    required: false
+    default: ''
+  configuration:
+    description: 'Model configuration file'
+    required: true
+    default: 'config.yml'
+  model:
+    description: 'Path to a file with a model. Use existing model instead of training a new one'
+    required: false
+    default: ''
+  cross_validation:
+    description: 'Switch on cross validation mode. Any provided model will be ignored'
+    required: false
+    default: 'false'
+  configuration_name:
+    description: 'Configuration name used in summary. If not provided a file name is used'
+    required: false
+    default: ''
+  data_name:
+    description: 'Data name used in summary. If not provided a directory name is used'
+    required: false
+    default: 'default'
+  compare_report:
+    description: 'Path to a report that will be used to compare results'
+    required: false
+    default: ''
+  result_directory:
+    description: 'Directory name where results are stored in'
+    required: false
+    default: 'results'
+  report_directory:
+    description: 'Directory name where reports are stored in'
+    required: false
+    default: 'reports'
+outputs:
+  report:
+    description: "Return report as JSON"
+    value: ${{ steps.report_output.outputs.report }}
+
+branding:
+  icon: 'layers'
+  color: 'green'
+
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set environment
+      shell: bash
+      run: |-
+        mkdir -p ${{ inputs.workspace }}/models
+        chmod 777 ${{ inputs.workspace }}/models
+        mkdir -p ${{ inputs.workspace }}/${{ inputs.result_directory }}
+        chmod 777 ${{ inputs.workspace }}/${{ inputs.result_directory }}
+        case "${{ inputs.test_type }}" in
+          all)
+            echo TEST_TYPE="" >> $GITHUB_ENV
+            ;;
+          nlu)
+            echo TEST_TYPE=nlu >> $GITHUB_ENV
+            echo DEFAULT_ARGS="--config /app/${{ inputs.configuration }}" >> $GITHUB_ENV
+            ;;
+          core)
+            echo TEST_TYPE=core >> $GITHUB_ENV
+            ;;
+          *)
+            echo "::error::Unknown test type: ${{ inputs.test_type }} (use: core/nlu/all)"
+            exit 1
+        esac
+        # Set a model path
+        if [[ -n "${{ inputs.model }}" ]];then
+          echo MODEL_ARGS="--model /app/${{ inputs.model }}" >> $GITHUB_ENV
+        fi
+        # Set cross validation
+        if [[ "${{ inputs.cross_validation }}" == "true" ]];then
+          echo CROSS_VALIDATION_ARGS="--cross-validation" >> $GITHUB_ENV
+        fi
+
+    - name: Clean
+      shell: bash
+      run: |
+        rm -rf ${{ inputs.workspace }}/${{ inputs.report_directory }}/report_main.json
