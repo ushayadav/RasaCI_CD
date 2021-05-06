@@ -15,11 +15,11 @@ inputs:
     default: 'true'
   rasa_test:
     description: 'Run rasa test'
-    required: false
+    required: true
     default: 'true'
   data_validate:
     description: 'Validates domain and data files to check for possible mistakes'
-    required: false
+    required: true
     default: 'true'
   workspace:
     description: 'The root directory'
